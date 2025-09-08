@@ -1,9 +1,11 @@
 name: vps
 
 on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *" # tự chạy lại mỗi 6 tiếng
 
 jobs:
   build:
@@ -11,9 +13,6 @@ jobs:
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@v4
-        
-      - name: 🚀 Run VPS (sshx)
-        run: |
-          curl -sSf https://sshx.io/get | sh -s run &
-          sleep 30
-          echo "🟢 VPS SSHX đang chạy..."
+
+      - name: 🚀 Run VPS
+        run: curl -sSf https://sshx.io/get | sh -s run
