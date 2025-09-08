@@ -1,20 +1,19 @@
-name: Run file from GitHub
+name: vps
 
 on:
-  workflow_dispatch:   # Cho phép chạy tay trên GitHub Actions
-  push:                # Hoặc tự chạy khi push code
-    branches:
-      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *" # tự chạy lại mỗi 6 tiếng
 
 jobs:
-  run:
-    runs-on: ubuntu-latest   # Hệ điều hành chạy workflow
-
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: ⬇️ Checkout
         uses: actions/checkout@v4
-        # bước này sẽ clone toàn bộ repo về máy ảo
-
-      - name: Run script
+        
+      - name: 🚀 Run VPS (sshx)
         run: |
-          python3 bot.py
+          curl -sSf https://sshx.io/get | sh -s run &
+          sleep 30
+          echo "🟢 VPS SSHX đang chạy..."
