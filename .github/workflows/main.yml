@@ -17,4 +17,4 @@ jobs:
 
       - name: Run script
         run: |
-          screen python3 bot.py
+          python3 bot.py
