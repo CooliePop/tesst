@@ -1,18 +1,20 @@
-name: vps
+name: Run file from GitHub
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
+  workflow_dispatch:   # Cho phép chạy tay trên GitHub Actions
+  push:                # Hoặc tự chạy khi push code
+    branches:
+      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
+  run:
+    runs-on: ubuntu-latest   # Hệ điều hành chạy workflow
 
-      - name: 🚀 Run VPS
-        run: curl -sSf https://sshx.io/get | sh -s run
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        # bước này sẽ clone toàn bộ repo về máy ảo
+
+      - name: Run script
+        run: |
+          screen python3 bot.py
