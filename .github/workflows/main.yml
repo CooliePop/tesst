@@ -5,14 +5,34 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:
+  workflow_dispatch:       # chạy thủ công
+  schedule:
+    - cron: "0 */5 * * *"  # chạy lại mỗi 6 tiếng (UTC)
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: ⬇️ Checkout
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🚀 Run VPS
-        run: npm install gradient-string@1.2.0 | npm install cheerio | npm install axios | npm install colors | python3 bot.py
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: 🔧 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: 📦 Cài dependencies Node.js
+        run: |
+          npm install gradient-string@1.2.0
+          npm install cheerio
+          npm install axios
+          npm install colors
+
+      - name: 🚀 Run bot.py
+        run: python3 bot.py
