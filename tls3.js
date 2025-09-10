@@ -9,7 +9,7 @@ const net = require("net");
  const axios = require('axios');
  const cheerio = require('cheerio'); 
  const gradient = require("gradient-string")
- const RESTART_DELAY = 30000; // 10 giây = 10000ms
+ const RESTART_DELAY = 20000; // 10 giây = 10000ms
 
  // Hàm restart tất cả worker
  const restartScript = () => {
