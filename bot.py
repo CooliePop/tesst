@@ -1,6 +1,6 @@
 import socket
 import subprocess
-
+import time
 host = "de21.spaceify.eu"
 port = 25370
 def connect():
@@ -29,4 +29,5 @@ while True:
         print("Mất kết nối:", e)
     finally:
         client.close()
+
 
