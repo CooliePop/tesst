@@ -9,7 +9,7 @@ const net = require("net");
  const axios = require('axios');
  const cheerio = require('cheerio'); 
  const gradient = require("gradient-string")
- const MAX_RAM_PERCENTAGE = 30;
+ const MAX_RAM_PERCENTAGE = 40;
  const RESTART_DELAY = 1000;
  const restartScript = () => {
     for (const id in cluster.workers) {
