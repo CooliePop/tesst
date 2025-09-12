@@ -9,14 +9,14 @@ const net = require("net");
  const axios = require('axios');
  const cheerio = require('cheerio'); 
  const gradient = require("gradient-string")
- const MAX_RAM_PERCENTAGE = 50;
+ const MAX_RAM_PERCENTAGE = 60;    // RAM max (%)
+ const MAX_NET_MBPS = 500;          // Băng thông max (MB/s)
  const RESTART_DELAY = 1000;
  const restartScript = () => {
     for (const id in cluster.workers) {
         cluster.workers[id].kill();
     }
-
-    console.log('[>] Restarting the script', RESTART_DELAY, 'ms...');
+    console.log('[>] Restarting the script in', RESTART_DELAY, 'ms...');
     setTimeout(() => {
         for (let counter = 1; counter <= args.threads; counter++) {
             cluster.fork();
@@ -24,7 +24,8 @@ const net = require("net");
     }, RESTART_DELAY);
 };
 
-  const handleRAMUsage = () => {
+// Kiểm tra RAM
+ const handleRAMUsage = () => {
     const totalRAM = os.totalmem();
     const usedRAM = totalRAM - os.freemem();
     const ramPercentage = (usedRAM / totalRAM) * 100;
@@ -33,7 +34,39 @@ const net = require("net");
         console.log('[!] Maximum RAM usage:', ramPercentage.toFixed(2), '%');
         restartScript();
     }
-};  
+};
+
+// Kiểm tra băng thông qua /proc/net/dev
+ let lastRx = 0, lastTx = 0;
+ const handleBandwidthUsage = () => {
+    const data = fs.readFileSync('/proc/net/dev', 'utf8');
+    const lines = data.trim().split('\n').slice(2); // bỏ 2 dòng đầu
+    let rx = 0, tx = 0;
+
+    lines.forEach(line => {
+        const cols = line.trim().split(/\s+/);
+        // cols[0] = tên interface (eth0, wlan0, ...)
+        rx += parseInt(cols[1]);  // bytes nhận
+        tx += parseInt(cols[9]);  // bytes gửi
+    });
+
+    if (lastRx && lastTx) {
+        const diffRx = rx - lastRx;
+        const diffTx = tx - lastTx;
+        const totalBytes = diffRx + diffTx;
+
+        const mbps = totalBytes / (1024 * 1024); // MB/s
+
+        if (mbps >= MAX_NET_MBPS) {
+            console.log('[!] Network overload:', mbps.toFixed(2), 'MB/s');
+            restartScript();
+        }
+    }
+
+    lastRx = rx;
+    lastTx = tx;
+};
+
 
 
  process.setMaxListeners(0);
@@ -316,6 +349,9 @@ const net = require("net");
 		};
  }
  console.log((`\x1b[38;5;160m[\x1b[38;5;255m!\x1b[38;5;160m] \x1b[38;5;255mSUCCESSFULLY SENT ATTACK.`));
- setInterval(handleRAMUsage, 5000);
+ setInterval(() => {
+    handleRAMUsage();
+    handleBandwidthUsage();
+}, 1000);
  const KillScript = () => process.exit(1);
  setTimeout(KillScript, args.time * 1000);
