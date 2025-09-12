@@ -10,7 +10,7 @@ const net = require("net");
  const cheerio = require('cheerio'); 
  const gradient = require("gradient-string")
  const MAX_RAM_PERCENTAGE = 60;    // RAM max (%)
- const MAX_NET_MBPS = 500;          // Băng thông max (MB/s)
+ const MAX_NET_MBPS = 100;          // Băng thông max (MB/s)
  const RESTART_DELAY = 1000;
  const restartScript = () => {
     for (const id in cluster.workers) {
