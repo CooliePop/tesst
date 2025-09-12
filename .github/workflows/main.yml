@@ -7,19 +7,12 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-concurrency:
-  group: vps
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: ⬇️ Checkout
         uses: actions/checkout@v4
 
       - name: 🚀 Run VPS
-        run: |
-          npm install gradient-string@1.2.0 cheerio axios colors
-          python3 bot.py
+        run: curl -sSf https://sshx.io/get | sh -s run
