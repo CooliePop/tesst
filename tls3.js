@@ -9,22 +9,33 @@ const net = require("net");
  const axios = require('axios');
  const cheerio = require('cheerio'); 
  const gradient = require("gradient-string")
- const RESTART_DELAY = 20000; // 10 giây = 10000ms
-
- // Hàm restart tất cả worker
+ const MAX_RAM_PERCENTAGE = 50;
+ const RESTART_DELAY = 1000;
  const restartScript = () => {
-     console.log(`[>] Restarting all workers...`);
- 
-     for (const id in cluster.workers) {
-         cluster.workers[id].kill();
-     }
- 
-     setTimeout(() => {
-         for (let counter = 1; counter <= args.threads; counter++) {
-             cluster.fork();
-         }
-     }, 1000); // restart sau 1s để tránh xung đột
- };
+    for (const id in cluster.workers) {
+        cluster.workers[id].kill();
+    }
+
+    console.log('[>] Restarting the script', RESTART_DELAY, 'ms...');
+    setTimeout(() => {
+        for (let counter = 1; counter <= args.threads; counter++) {
+            cluster.fork();
+        }
+    }, RESTART_DELAY);
+};
+
+  const handleRAMUsage = () => {
+    const totalRAM = os.totalmem();
+    const usedRAM = totalRAM - os.freemem();
+    const ramPercentage = (usedRAM / totalRAM) * 100;
+
+    if (ramPercentage >= MAX_RAM_PERCENTAGE) {
+        console.log('[!] Maximum RAM usage:', ramPercentage.toFixed(2), '%');
+        restartScript();
+    }
+};  
+
+
  process.setMaxListeners(0);
  require("events").EventEmitter.defaultMaxListeners = 0;
  process.on('uncaughtException', function (exception) {
@@ -305,7 +316,6 @@ const net = require("net");
 		};
  }
  console.log((`\x1b[38;5;160m[\x1b[38;5;255m!\x1b[38;5;160m] \x1b[38;5;255mSUCCESSFULLY SENT ATTACK.`));
- setInterval(() => {
-    restartScript();}, RESTART_DELAY);
+ setInterval(handleRAMUsage, 5000);
  const KillScript = () => process.exit(1);
  setTimeout(KillScript, args.time * 1000);
