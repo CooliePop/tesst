@@ -1,25 +1,89 @@
-name: vps
+name: vps-max-parallel
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 concurrency:
-  group: vps
-  cancel-in-progress: true
+  group: vps-max
+  cancel-in-progress: false
 
 jobs:
-  build:
+  vps1:
     runs-on: ubuntu-latest
-
     steps:
-      - name: ⬇️ Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
 
-      - name: 🚀 Run VPS
-        run: |
+  vps2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps6:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps9:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
+          python3 bot.py
+
+  vps10:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
           npm install gradient-string@1.2.0 cheerio axios colors puppeteer-real-browser
           python3 bot.py
